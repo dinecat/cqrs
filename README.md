@@ -1,3 +1,3 @@
-# Messenger Bundle
+# Messenger Component
 
-Provide Command, Query and Event message buses.
+Just extension over Symfony Messenger for provide Command, Query and Event message buses.
