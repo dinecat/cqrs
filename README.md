@@ -2,7 +2,7 @@
 
 Just extension over Symfony Messenger for provide Command, Query and Event message buses.
 
-##Using in Symfony project
+## Using in Symfony project
 
 See: https://symfony.com/doc/current/messenger/multiple_buses.html
 
