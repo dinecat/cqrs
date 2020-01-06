@@ -7,6 +7,7 @@ namespace Dinecat\Messenger\Exception;
 use Dinecat\Messenger\QueryBus\QueryMessageInterface;
 use InvalidArgumentException;
 use function get_class;
+use function sprintf;
 
 /**
  * Exception for cases when invalid query passes validation level and enters the handler.
