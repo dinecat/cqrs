@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\Messenger\CommandBus;
+namespace Dinecat\Cqrs\Command;
 
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * Decorator for command message bus.
+ * Command message bus.
  * For performance & RAD purposes command bus can return values.
  *
  * @author Mykola Zyk <mykola.zyk@dinecat.com>
@@ -23,9 +23,9 @@ final class CommandBus
     }
 
     /**
-     * @return mixed The handler returned value
+     * Performs command and returns result.
      */
-    public function command(CommandMessageInterface $command)
+    public function command(CommandInterface $command): mixed
     {
         return $this->handle($command);
     }

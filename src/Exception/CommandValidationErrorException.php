@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\Messenger\Exception;
+namespace Dinecat\Cqrs\Exception;
 
-use Dinecat\Messenger\CommandBus\CommandMessageInterface;
+use Dinecat\Cqrs\Command\CommandInterface;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\Pure;
 use function get_class;
 use function sprintf;
 
@@ -16,7 +17,8 @@ use function sprintf;
  */
 final class CommandValidationErrorException extends InvalidArgumentException
 {
-    public static function byCommand(CommandMessageInterface $command): self
+    #[Pure]
+    public static function byCommand(CommandInterface $command): self
     {
         return new self(sprintf(
             'Command "%s" validation error (missed middleware or validation rules).',

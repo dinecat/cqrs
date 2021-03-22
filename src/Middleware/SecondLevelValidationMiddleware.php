@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\Messenger\Middleware;
+namespace Dinecat\Cqrs\Middleware;
 
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\ValidationFailedException;

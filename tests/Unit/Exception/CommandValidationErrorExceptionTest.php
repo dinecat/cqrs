@@ -2,43 +2,38 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\MessengerTests\Unit\Exception;
+namespace Dinecat\CqrsTests\Unit\Exception;
 
-use Dinecat\Messenger\CommandBus\CommandMessageInterface;
-use Dinecat\Messenger\Exception\CommandValidationErrorException;
+use Dinecat\Cqrs\Command\CommandInterface;
+use Dinecat\Cqrs\Exception\CommandValidationErrorException;
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use function get_class;
 use function sprintf;
 
-class CommandValidationErrorExceptionTest extends TestCase
+/**
+ * @covers \Dinecat\Cqrs\Exception\CommandValidationErrorException
+ *
+ * @internal
+ */
+final class CommandValidationErrorExceptionTest extends TestCase
 {
     /**
      * Checks if method return right configured instance and right parent.
+     *
+     * @covers \Dinecat\Cqrs\Exception\CommandValidationErrorException::byCommand
      */
     public function testByCommandCreation(): void
     {
-        $command = $this->getCommandMessageMock();
+        $command = $this->createMock(CommandInterface::class);
 
         $exception = CommandValidationErrorException::byCommand($command);
 
-        $this->assertEquals(
-            sprintf(
-                'Command "%s" validation error (missed middleware or validation rules).',
-                get_class($command)
-            ),
+        self::assertEquals(
+            sprintf('Command "%s" validation error (missed middleware or validation rules).', get_class($command)),
             $exception->getMessage()
         );
 
-        $this->assertInstanceOf(InvalidArgumentException::class, $exception);
-    }
-
-    /**
-     * @return CommandMessageInterface|MockObject
-     */
-    private function getCommandMessageMock(): CommandMessageInterface
-    {
-        return $this->createMock(CommandMessageInterface::class);
+        self::assertInstanceOf(InvalidArgumentException::class, $exception);
     }
 }
