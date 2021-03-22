@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\Messenger\Exception;
+namespace Dinecat\Cqrs\Exception;
 
-use Dinecat\Messenger\QueryBus\QueryMessageInterface;
+use Dinecat\Cqrs\Query\QueryInterface;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\Pure;
 use function get_class;
 use function sprintf;
 
@@ -16,7 +17,8 @@ use function sprintf;
  */
 final class QueryValidationErrorException extends InvalidArgumentException
 {
-    public static function byQuery(QueryMessageInterface $query): self
+    #[Pure]
+    public static function byQuery(QueryInterface $query): self
     {
         return new self(sprintf(
             'Query "%s" validation error (missed middleware or validation rules).',

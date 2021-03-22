@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\Messenger\EventBus;
+namespace Dinecat\Cqrs\Event;
 
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * Decorator for event message bus.
+ * Event message bus.
  *
  * @author Mykola Zyk <mykola.zyk@dinecat.com>
  */
@@ -20,7 +20,7 @@ final class EventBus
         $this->messageBus = $eventMessageBus;
     }
 
-    public function event(EventMessageInterface $event): void
+    public function event(EventInterface $event): void
     {
         $this->messageBus->dispatch($event);
     }

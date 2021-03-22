@@ -1,6 +1,6 @@
-# Messenger Component
+# CQRS Component
 
-Just extension over Symfony Messenger for provide Command, Query and Event message buses.
+Just extension over Symfony Messenger for provide Command, Query and Event message buses and related structures.
 
 ## Using in Symfony project
 
@@ -16,7 +16,7 @@ See: https://symfony.com/doc/current/messenger/multiple_buses.html
                 messenger.bus.commands:
                     middleware:
                         - 'validation'
-                        - 'Dinecat\Messenger\Middleware\SecondLevelValidationMiddleware' # If you need second level.
+                        - 'Dinecat\Cqrs\Middleware\SecondLevelValidationMiddleware' # If you need second level.
                 messenger.bus.queries:
                     middleware:
                         - 'validation'
@@ -30,15 +30,15 @@ See: https://symfony.com/doc/current/messenger/multiple_buses.html
     ```yaml
     services:
         _instanceof:
-            Dinecat\Messenger\CommandBus\CommandMessageHandlerInterface:
+            Dinecat\Cqrs\CommandBus\CommandHandlerInterface:
                 tags:
                     - { name: 'messenger.message_handler', bus: 'messenger.bus.commands' }
     
-            Dinecat\Messenger\QueryBus\QueryMessageHandlerInterface:
+            Dinecat\Cqrs\QueryBus\QueryHandlerInterface:
                 tags:
                     - { name: 'messenger.message_handler', bus: 'messenger.bus.queries' }
     
-            Dinecat\Messenger\EventBus\EventMessageHandlerInterface:
+            Dinecat\Cqrs\EventBus\EventHandlerInterface:
                 tags:
                     - { name: 'messenger.message_handler', bus: 'messenger.bus.events' }
     ```

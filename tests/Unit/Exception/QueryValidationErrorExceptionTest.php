@@ -2,43 +2,38 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\MessengerTests\Unit\Exception;
+namespace Dinecat\CqrsTests\Unit\Exception;
 
-use Dinecat\Messenger\Exception\QueryValidationErrorException;
-use Dinecat\Messenger\QueryBus\QueryMessageInterface;
+use Dinecat\Cqrs\Exception\QueryValidationErrorException;
+use Dinecat\Cqrs\Query\QueryInterface;
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use function get_class;
 use function sprintf;
 
-class QueryValidationErrorExceptionTest extends TestCase
+/**
+ * @covers \Dinecat\Cqrs\Exception\QueryValidationErrorException
+ *
+ * @internal
+ */
+final class QueryValidationErrorExceptionTest extends TestCase
 {
     /**
      * Checks if method return right configured instance and right parent.
+     *
+     * @covers \Dinecat\Cqrs\Exception\QueryValidationErrorException::byQuery
      */
     public function testByQueryCreation(): void
     {
-        $query = $this->getQueryMessageMock();
+        $query = $this->createMock(QueryInterface::class);
 
         $exception = QueryValidationErrorException::byQuery($query);
 
-        $this->assertEquals(
-            sprintf(
-                'Query "%s" validation error (missed middleware or validation rules).',
-                get_class($query)
-            ),
+        self::assertEquals(
+            sprintf('Query "%s" validation error (missed middleware or validation rules).', get_class($query)),
             $exception->getMessage()
         );
 
-        $this->assertInstanceOf(InvalidArgumentException::class, $exception);
-    }
-
-    /**
-     * @return QueryMessageInterface|MockObject
-     */
-    private function getQueryMessageMock(): QueryMessageInterface
-    {
-        return $this->createMock(QueryMessageInterface::class);
+        self::assertInstanceOf(InvalidArgumentException::class, $exception);
     }
 }
