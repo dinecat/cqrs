@@ -11,7 +11,7 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * @covers \Dinecat\Cqrs\Event\EventBus
+ * @coversDefaultClass \Dinecat\Cqrs\Event\EventBus
  *
  * @internal
  */
@@ -20,7 +20,7 @@ final class EventBusTest extends TestCase
     /**
      * Checks is event dispatched.
      *
-     * @covers \Dinecat\Cqrs\Event\EventBus::event
+     * @covers ::event
      */
     public function testOnExecuteCommand(): void
     {
@@ -36,7 +36,7 @@ final class EventBusTest extends TestCase
         $messageBus
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(fn (EventInterface $event) => $this->createMock(Envelope::class));
+            ->willReturnCallback(fn (EventInterface $event) => new Envelope($event));
 
         return $messageBus;
     }

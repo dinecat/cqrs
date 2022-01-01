@@ -3,5 +3,3 @@ parameters:
     paths:
         - src
         - tests
-    excludes_analyse:
-        - tests/Hook/*

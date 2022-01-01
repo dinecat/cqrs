@@ -6,7 +6,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/tests');
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setUsingCache(true)
     ->setRiskyAllowed(true)
     ->setRules([
@@ -21,7 +21,7 @@ return PhpCsFixer\Config::create()
                 'foreach', 'if', 'return', 'switch', 'throw', 'try', 'while', 'yield',
             ]
         ],
-        'class_attributes_separation' => ['elements' => ['method', 'property']],
+        'class_attributes_separation' => ['elements' => ['method' => 'one', 'property' => 'one']],
         'concat_space' => ['spacing' => 'one'],
         'declare_strict_types' => true,
         'global_namespace_import' => ['import_classes' => true, 'import_constants' => true, 'import_functions' => true],
@@ -32,7 +32,7 @@ return PhpCsFixer\Config::create()
             'tokens' => [
                 'case', 'continue', 'curly_brace_block', 'default', 'extra',
                 'parenthesis_brace_block', 'return', 'square_brace_block',
-                'switch', 'throw', 'use', 'useTrait', 'use_trait',
+                'switch', 'throw', 'use', 'use_trait',
             ]
         ],
         'non_printable_character' => ['use_escape_sequences_in_strings' => true],
@@ -43,8 +43,7 @@ return PhpCsFixer\Config::create()
         'ordered_imports' => ['imports_order' => ['class', 'const', 'function'], 'sort_algorithm' => 'alpha'],
         'phpdoc_order' => true,
         'phpdoc_trim_consecutive_blank_line_separation' => true,
-        'psr0' => true,
-        'psr4' => true,
+        'psr_autoloading' => true,
         'single_line_throw' => false,
         'strict_comparison' => true,
         'yoda_style' => ['equal' => false, 'identical' => false, 'less_and_greater' => false],

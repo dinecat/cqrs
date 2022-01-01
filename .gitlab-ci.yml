@@ -1,4 +1,4 @@
-image: php:8.0
+image: php:8.1
 
 cache:
     paths:
@@ -13,7 +13,7 @@ before_script:
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install
 
-test.phpunit.8.0:
+test.phpunit.8.1:
     script:
         - vendor/bin/phpunit --coverage-text --colors=never
 
@@ -23,4 +23,4 @@ test.phpstan:
 
 test.phpcs:
     script:
-        - vendor/bin/php-cs-fixer fix --using-cache no -vvv
+        - vendor/bin/php-cs-fixer fix --dry-run

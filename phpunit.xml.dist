@@ -18,7 +18,4 @@
             <directory phpVersion="8.0.0" phpVersionOperator=">=">tests</directory>
         </testsuite>
     </testsuites>
-    <extensions>
-        <extension class="Dinecat\CqrsTests\Hook\BypassFinalHook"/>
-    </extensions>
 </phpunit>

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Dinecat\CqrsTests\Unit\Middleware;
 
 use Dinecat\Cqrs\Command\CommandInterface;
-use Dinecat\Cqrs\Middleware\SecondLevelValidationMiddleware;
+use Dinecat\Cqrs\Middleware\SecondLayerValidationMiddleware;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\ValidationFailedException;
@@ -14,25 +14,23 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * @covers \Dinecat\Cqrs\Middleware\SecondLevelValidationMiddleware
+ * @coversDefaultClass \Dinecat\Cqrs\Middleware\SecondLayerValidationMiddleware
  *
  * @internal
  */
-final class SecondValidationMiddlewareTest extends TestCase
+final class SecondLayerValidationMiddlewareTest extends TestCase
 {
     /**
      * Checks if valid message can go through second validation middleware.
      *
-     * @covers \Dinecat\Cqrs\Middleware\SecondLevelValidationMiddleware::handle
+     * @covers ::handle
      */
     public function testHandleValidMessage(): void
     {
         $command = $this->createMock(CommandInterface::class);
-        $envelope = $this->createMock(Envelope::class);
+        $envelope = new Envelope($command);
 
-        $envelope->expects(self::once())->method('getMessage')->willReturn($command);
-
-        $middleware = new SecondLevelValidationMiddleware($this->getValidatorForValidMessageMock($command));
+        $middleware = new SecondLayerValidationMiddleware($this->getValidatorForMessageMock($command, 0));
 
         $middleware->handle($envelope, $this->getStackForValidMessageMock($envelope));
     }
@@ -40,18 +38,16 @@ final class SecondValidationMiddlewareTest extends TestCase
     /**
      * Checks if invalid message raise exception.
      *
-     * @covers \Dinecat\Cqrs\Middleware\SecondLevelValidationMiddleware::handle
+     * @covers ::handle
      */
     public function testHandleInvalidMessage(): void
     {
         $command = $this->createMock(CommandInterface::class);
-        $envelope = $this->createMock(Envelope::class);
-
-        $envelope->expects(self::once())->method('getMessage')->willReturn($command);
+        $envelope = new Envelope($command);
 
         $this->expectException(ValidationFailedException::class);
 
-        $middleware = new SecondLevelValidationMiddleware($this->getValidatorForInvalidMessageMock($command));
+        $middleware = new SecondLayerValidationMiddleware($this->getValidatorForMessageMock($command, 1));
 
         $middleware->handle($envelope, $this->getStackForInvalidMessageMock($envelope));
     }
@@ -76,20 +72,7 @@ final class SecondValidationMiddlewareTest extends TestCase
         return $stack;
     }
 
-    private function getValidatorForValidMessageMock(CommandInterface $message): ValidatorInterface
-    {
-        $validator = $this->createMock(ValidatorInterface::class);
-
-        $validator
-            ->expects(self::once())
-            ->method('validate')
-            ->with($message, null, ['PostValidation'])
-            ->willReturn([]);
-
-        return $validator;
-    }
-
-    private function getValidatorForInvalidMessageMock(CommandInterface $message): ValidatorInterface
+    private function getValidatorForMessageMock(CommandInterface $message, int $violationsCount): ValidatorInterface
     {
         $validator = $this->createMock(ValidatorInterface::class);
 
@@ -97,12 +80,12 @@ final class SecondValidationMiddlewareTest extends TestCase
         $violationList
             ->expects(self::once())
             ->method('count')
-            ->willReturn(1);
+            ->willReturn($violationsCount);
 
         $validator
             ->expects(self::once())
             ->method('validate')
-            ->with($message, null, ['PostValidation'])
+            ->with($message, null, ['L2Validation'])
             ->willReturn($violationList);
 
         return $validator;
