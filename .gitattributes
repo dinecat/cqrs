@@ -1,5 +1,6 @@
 /tests export-ignore
+/phpstan.neon.dist export-ignore
 /phpunit.xml.dist export-ignore
 /.gitignore export-ignore
 /.gitlab-ci.yml export-ignore
-/.php_cs.dist export-ignore
+/.php-cs-fixer.dist.php export-ignore

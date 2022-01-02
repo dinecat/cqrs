@@ -8,7 +8,7 @@ use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * Query message bus.
+ * Bus for query messages.
  *
  * @author Mykola Zyk <mykola.zyk@dinecat.com>
  */

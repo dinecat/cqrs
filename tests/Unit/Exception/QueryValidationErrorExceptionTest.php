@@ -8,11 +8,10 @@ use Dinecat\Cqrs\Exception\QueryValidationErrorException;
 use Dinecat\Cqrs\Query\QueryInterface;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use function get_class;
 use function sprintf;
 
 /**
- * @covers \Dinecat\Cqrs\Exception\QueryValidationErrorException
+ * @coversDefaultClass \Dinecat\Cqrs\Exception\QueryValidationErrorException
  *
  * @internal
  */
@@ -21,7 +20,7 @@ final class QueryValidationErrorExceptionTest extends TestCase
     /**
      * Checks if method return right configured instance and right parent.
      *
-     * @covers \Dinecat\Cqrs\Exception\QueryValidationErrorException::byQuery
+     * @covers ::byQuery
      */
     public function testByQueryCreation(): void
     {
@@ -30,10 +29,35 @@ final class QueryValidationErrorExceptionTest extends TestCase
         $exception = QueryValidationErrorException::byQuery($query);
 
         self::assertEquals(
-            sprintf('Query "%s" validation error (missed middleware or validation rules).', get_class($query)),
+            sprintf('Query "%s" validation error (missed middleware or validation rules).', $query::class),
             $exception->getMessage()
         );
 
         self::assertInstanceOf(InvalidArgumentException::class, $exception);
+    }
+
+    /**
+     * Checks if method returns right configured instance.
+     *
+     * @covers ::byProperty
+     */
+    public function testByPropertyMethod(): void
+    {
+        $query = new class() implements QueryInterface {
+            public function getSomething(): int
+            {
+                return 42;
+            }
+        };
+
+        $exception = QueryValidationErrorException::byProperty($query, 'something');
+
+        self::assertEquals(
+            sprintf(
+                'Property "something" with value "42" in query "%s" failed validation (misconfigured validation rules?).',
+                $query::class
+            ),
+            $exception->getMessage()
+        );
     }
 }

@@ -1,11 +1,11 @@
 ###> dinecat/cqrs ###
 /vendor/
-composer.lock
+/composer.lock
 ###< dinecat/cqrs ###
 
 ###> friendsofphp/php-cs-fixer ###
-.php_cs
-.php_cs.cache
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
 
 ###> phpstan/phpstan ###
@@ -13,15 +13,15 @@ composer.lock
 ###< phpstan/phpstan ###
 
 ###> phpunit/phpunit ###
-.phpunit
+/.phpunit
 /phpunit.xml
-.phpunit.result.cache
+/.phpunit.result.cache
 /coverage/
 ###< phpunit/phpunit ###
 
 ###> custom dev rules ###
-.idea
-composer.phar
+/.idea
+/composer.phar
 ###< custom dev rules ###
 
 

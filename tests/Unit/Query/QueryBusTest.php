@@ -12,7 +12,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 
 /**
- * @covers \Dinecat\Cqrs\Query\QueryBus
+ * @coversDefaultClass \Dinecat\Cqrs\Query\QueryBus
  *
  * @internal
  */
@@ -21,7 +21,7 @@ final class QueryBusTest extends TestCase
     /**
      * Checks is query dispatched and result is returned.
      *
-     * @covers \Dinecat\Cqrs\Query\QueryBus::query
+     * @covers ::query
      */
     public function testOnPerformQuery(): void
     {
@@ -35,17 +35,13 @@ final class QueryBusTest extends TestCase
     private function getMessageBusMock(): MessageBusInterface
     {
         $messageBus = $this->createMock(MessageBusInterface::class);
-        $envelope = $this->createMock(Envelope::class);
-        $handledStamp = $this->createMock(HandledStamp::class);
-
-        $handledStamp->method('getResult')->willReturn(['something']);
-
-        $envelope->method('all')->willReturn([$handledStamp]);
 
         $messageBus
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(fn (QueryInterface $query) => $envelope);
+            ->willReturnCallback(
+                fn (QueryInterface $query) => new Envelope($query, [new HandledStamp(['something'], 'some')])
+            );
 
         return $messageBus;
     }

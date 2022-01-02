@@ -1,44 +1,65 @@
 # CQRS Component
 
-Just extension over Symfony Messenger for provide Command, Query and Event message buses and related structures.
+Extension over Symfony Messenger component for provide Command, Query and Event message buses and related functionality.
 
 ## Using in Symfony project
 
 See: https://symfony.com/doc/current/messenger/multiple_buses.html
 
-1. Setup buses in config/packages/messenger.yaml
+### Setup buses in config/packages/messenger.php (or yaml)
 
-    ```yaml
-    framework:
-        messenger:
-            default_bus: 'messenger.bus.commands'
-            buses:
-                messenger.bus.commands:
-                    middleware:
-                        - 'validation'
-                        - 'Dinecat\Cqrs\Middleware\SecondLevelValidationMiddleware' # If you need second level.
-                messenger.bus.queries:
-                    middleware:
-                        - 'validation'
-                messenger.bus.events:
-                    default_middleware: 'allow_no_handlers'
-                    middleware: []
-    ```
+```php
+$messenger = $framework->messenger();
 
-2. Restrict handlers per bus in config/services.yaml
+$messenger->defaultBus('bus.command');
+$messenger->bus('bus.command')->middleware()->id('validation');
+$messenger->bus('bus.query')->middleware()->id('validation');
+$messenger->bus('bus.event')->defaultMiddleware('allow_no_handlers');
+```
 
-    ```yaml
-    services:
-        _instanceof:
-            Dinecat\Cqrs\CommandBus\CommandHandlerInterface:
-                tags:
-                    - { name: 'messenger.message_handler', bus: 'messenger.bus.commands' }
-    
-            Dinecat\Cqrs\QueryBus\QueryHandlerInterface:
-                tags:
-                    - { name: 'messenger.message_handler', bus: 'messenger.bus.queries' }
-    
-            Dinecat\Cqrs\EventBus\EventHandlerInterface:
-                tags:
-                    - { name: 'messenger.message_handler', bus: 'messenger.bus.events' }
-    ```
+```yaml
+framework:
+    messenger:
+        default_bus: 'bus.command'
+        buses:
+            bus.command:
+                middleware:
+                    - 'validation'
+                    - 'Dinecat\Cqrs\Middleware\SecondLayerValidationMiddleware' # If you need second level.
+            bus.query:
+                middleware:
+                    - 'validation'
+            bus.event:
+                default_middleware: 'allow_no_handlers'
+                middleware: []
+```
+
+### Restrict handlers per bus in config/services.php (or yaml)
+
+```php
+$services
+    ->instanceof(CommandHandlerInterface::class)
+        ->tag('messenger.message_handler', ['bus' => 'bus.command']);
+$services
+    ->instanceof(QueryHandlerInterface::class)
+        ->tag('messenger.message_handler', ['bus' => 'bus.query']);
+$services
+    ->instanceof(EventHandlerInterface::class)
+        ->tag('messenger.message_handler', ['bus' => 'bus.event']);
+```
+
+```yaml
+services:
+    _instanceof:
+        Dinecat\Cqrs\CommandBus\CommandHandlerInterface:
+            tags:
+                - { name: 'messenger.message_handler', bus: 'bus.command' }
+
+        Dinecat\Cqrs\QueryBus\QueryHandlerInterface:
+            tags:
+                - { name: 'messenger.message_handler', bus: 'bus.query' }
+
+        Dinecat\Cqrs\EventBus\EventHandlerInterface:
+            tags:
+                - { name: 'messenger.message_handler', bus: 'bus.event' }
+```

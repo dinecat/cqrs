@@ -7,7 +7,7 @@ namespace Dinecat\Cqrs\Event;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * Event message bus.
+ * Bus for event messages.
  *
  * @author Mykola Zyk <mykola.zyk@dinecat.com>
  */

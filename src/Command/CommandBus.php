@@ -8,8 +8,9 @@ use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * Command message bus.
- * For performance & RAD purposes command bus can return values.
+ * Bus for command messages.
+ *
+ * For performance & RAD purposes command bus can return result of command execution.
  *
  * @author Mykola Zyk <mykola.zyk@dinecat.com>
  */

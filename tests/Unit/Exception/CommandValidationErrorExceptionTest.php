@@ -8,32 +8,56 @@ use Dinecat\Cqrs\Command\CommandInterface;
 use Dinecat\Cqrs\Exception\CommandValidationErrorException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use function get_class;
 use function sprintf;
 
 /**
- * @covers \Dinecat\Cqrs\Exception\CommandValidationErrorException
+ * @coversDefaultClass \Dinecat\Cqrs\Exception\CommandValidationErrorException
  *
  * @internal
  */
 final class CommandValidationErrorExceptionTest extends TestCase
 {
     /**
-     * Checks if method return right configured instance and right parent.
+     * Checks if method returns right configured instance and has right parent class.
      *
-     * @covers \Dinecat\Cqrs\Exception\CommandValidationErrorException::byCommand
+     * @covers ::byCommand
      */
-    public function testByCommandCreation(): void
+    public function testByCommandMethod(): void
     {
         $command = $this->createMock(CommandInterface::class);
 
         $exception = CommandValidationErrorException::byCommand($command);
 
         self::assertEquals(
-            sprintf('Command "%s" validation error (missed middleware or validation rules).', get_class($command)),
+            sprintf('Command "%s" validation error (missed middleware or validation rules).', $command::class),
             $exception->getMessage()
         );
 
         self::assertInstanceOf(InvalidArgumentException::class, $exception);
+    }
+
+    /**
+     * Checks if method returns right configured instance.
+     *
+     * @covers ::byProperty
+     */
+    public function testByPropertyMethod(): void
+    {
+        $command = new class() implements CommandInterface {
+            public function getSomething(): int
+            {
+                return 42;
+            }
+        };
+
+        $exception = CommandValidationErrorException::byProperty($command, 'something');
+
+        self::assertEquals(
+            sprintf(
+                'Property "something" with value "42" in command "%s" failed validation (misconfigured validation rules?).',
+                $command::class
+            ),
+            $exception->getMessage()
+        );
     }
 }
