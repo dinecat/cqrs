@@ -7,6 +7,7 @@ namespace Dinecat\Cqrs\Exception;
 use Dinecat\Cqrs\Query\QueryInterface;
 use InvalidArgumentException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+
 use function sprintf;
 use function var_export;
 

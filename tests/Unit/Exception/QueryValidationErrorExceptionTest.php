@@ -8,6 +8,7 @@ use Dinecat\Cqrs\Exception\QueryValidationErrorException;
 use Dinecat\Cqrs\Query\QueryInterface;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+
 use function sprintf;
 
 /**

@@ -10,8 +10,8 @@ return (new PhpCsFixer\Config())
     ->setUsingCache(true)
     ->setRiskyAllowed(true)
     ->setRules([
-        '@PSR12' => true,
         '@PSR2' => true,
+        '@PSR12' => true,
         '@PHP80Migration' => true,
         '@PhpCsFixer' => true,
         'array_syntax' => ['syntax' => 'short'],
@@ -28,6 +28,7 @@ return (new PhpCsFixer\Config())
         'is_null' => true,
         'mb_str_functions' => true,
         'multiline_whitespace_before_semicolons' => ['strategy' => 'no_multi_line'],
+        'native_function_invocation' => ['include' => ['@all']],
         'no_extra_blank_lines' => [
             'tokens' => [
                 'case', 'continue', 'curly_brace_block', 'default', 'extra',

@@ -8,6 +8,7 @@ use Dinecat\Cqrs\Command\CommandInterface;
 use Dinecat\Cqrs\Exception\CommandValidationErrorException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+
 use function sprintf;
 
 /**
