@@ -9,6 +9,4 @@ namespace Dinecat\CQRS\Query;
  *
  * @author Mykola Zyk <mykola.zyk@dinecat.com>
  */
-interface QueryHandlerInterface
-{
-}
+interface QueryHandlerInterface {}

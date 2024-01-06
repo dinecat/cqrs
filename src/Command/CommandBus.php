@@ -32,7 +32,7 @@ final class CommandBus
      *
      * @param array<StampInterface> $stamps
      */
-    public function command(object $command, array $stamps = []): mixed
+    public function command(CommandInterface $command, array $stamps = []): mixed
     {
         if ($command instanceof AsyncCommandInterface) {
             $this->messageBus->dispatch(message: $command, stamps: $stamps);

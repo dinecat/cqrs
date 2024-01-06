@@ -9,6 +9,4 @@ namespace Dinecat\CQRS\Command;
  *
  * @author Mykola Zyk <mykola.zyk@dinecat.com>
  */
-interface AsyncCommandInterface extends CommandInterface
-{
-}
+interface AsyncCommandInterface extends CommandInterface {}

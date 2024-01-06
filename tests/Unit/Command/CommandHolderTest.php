@@ -33,9 +33,9 @@ final class CommandHolderTest extends TestCase
     /**
      * @dataProvider getInvalidCases
      *
-     * @param class-string|string $type
-     * @param class-string|null|string $required
-     * @param class-string|null|string $given
+     * @param class-string|string      $type
+     * @param null|class-string|string $required
+     * @param null|class-string|string $given
      *
      * @covers ::getArrayValue
      * @covers ::getBoolValue
@@ -90,20 +90,17 @@ final class CommandHolderTest extends TestCase
         match ($type) {
             'array' => $commandHolder->getArrayValue(propertyName: $propertyName),
             'boolean' => $commandHolder->getBoolValue(propertyName: $propertyName),
+            // @phpstan-ignore-next-line
             'unit-enum' => $commandHolder->getEnumValue(propertyName: $propertyName, enumClass: TestClass::class),
             'str-enum' => $commandHolder->getEnumValue(propertyName: $propertyName, enumClass: TestEnum::class),
             'int-enum' => $commandHolder->getEnumValue(propertyName: $propertyName, enumClass: TestIntEnum::class),
             'float' => $commandHolder->getFloatValue(propertyName: $propertyName),
             'integer' => $commandHolder->getIntValue(propertyName: $propertyName),
             'string' => $commandHolder->getStringValue(propertyName: $propertyName),
+            // @phpstan-ignore-next-line
             default => $commandHolder->getObjectValue(propertyName: $propertyName, valueClass: $required ?? $type)
         };
     }
-
-    /*public function testInvalidEnumType(): void
-    {
-
-    }*/
 
     /**
      * @covers ::getArrayValue
@@ -228,7 +225,7 @@ final class CommandHolderTest extends TestCase
                 private readonly int $enumInt = 2,
                 private readonly float $float = 1.22,
                 private readonly int $integer = 42,
-                /* @noinspection PhpPropertyOnlyWrittenInspection UnknownInspection @phpstan-ignore-next-line */
+                /** @noinspection PhpPropertyOnlyWrittenInspection UnknownInspection @phpstan-ignore-next-line */
                 private readonly string $noaccess = 'something',
                 private readonly TestClass $object = new TestClass(),
                 private readonly string $string = 'something',

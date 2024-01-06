@@ -9,6 +9,4 @@ namespace Dinecat\CQRS\Event;
  *
  * @author Mykola Zyk <mykola.zyk@dinecat.com>
  */
-interface EventHandlerInterface
-{
-}
+interface EventHandlerInterface {}
