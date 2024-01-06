@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\CqrsTests\Unit\Event;
+namespace Dinecat\CQRSTests\Unit\Event;
 
-use Dinecat\Cqrs\Event\EventBus;
-use Dinecat\Cqrs\Event\EventInterface;
+use Dinecat\CQRS\Event\EventBus;
+use Dinecat\CQRS\Event\EventInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * @coversDefaultClass \Dinecat\Cqrs\Event\EventBus
+ * @coversDefaultClass \Dinecat\CQRS\Event\EventBus
  *
  * @internal
  */
@@ -20,23 +20,23 @@ final class EventBusTest extends TestCase
     /**
      * Checks is event dispatched.
      *
+     * @covers ::__construct
      * @covers ::event
      */
     public function testOnExecuteCommand(): void
     {
-        $bus = new EventBus($this->getMessageBusMock());
-
-        $bus->event($this->createMock(EventInterface::class));
+        (new EventBus(eventMessageBus: $this->getMessageBusMock()))
+            ->event(event: $this->createMock(originalClassName: EventInterface::class));
     }
 
     private function getMessageBusMock(): MessageBusInterface
     {
-        $messageBus = $this->createMock(MessageBusInterface::class);
+        $messageBus = $this->createMock(originalClassName: MessageBusInterface::class);
 
         $messageBus
             ->expects(self::once())
-            ->method('dispatch')
-            ->willReturnCallback(fn (EventInterface $event) => new Envelope($event));
+            ->method(constraint: 'dispatch')
+            ->willReturnCallback(callback: static fn (EventInterface $event) => new Envelope(message: $event));
 
         return $messageBus;
     }

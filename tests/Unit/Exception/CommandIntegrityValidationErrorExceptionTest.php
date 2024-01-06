@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Dinecat\CQRSTests\Unit\Exception;
 
-use Dinecat\CQRS\Exception\QueryIntegrityValidationErrorException;
-use Dinecat\CQRS\Query\QueryInterface;
+use Dinecat\CQRS\Command\CommandInterface;
+use Dinecat\CQRS\Exception\CommandIntegrityValidationErrorException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 use function sprintf;
 
 /**
- * @coversDefaultClass \Dinecat\CQRS\Exception\QueryIntegrityValidationErrorException
+ * @coversDefaultClass \Dinecat\CQRS\Exception\CommandIntegrityValidationErrorException
  *
  * @internal
  */
-final class QueryValidationErrorExceptionTest extends TestCase
+final class CommandIntegrityValidationErrorExceptionTest extends TestCase
 {
     /**
      * Checks if method returns right configured instance and has right parent class.
@@ -25,26 +25,26 @@ final class QueryValidationErrorExceptionTest extends TestCase
      */
     public function testGeneralMethod(): void
     {
-        $query = $this->createMock(originalClassName: QueryInterface::class);
+        $command = $this->createMock(originalClassName: CommandInterface::class);
 
-        $exception = QueryIntegrityValidationErrorException::general(query: $query);
+        $exception = CommandIntegrityValidationErrorException::general(command: $command);
 
         self::assertEquals(
             expected: sprintf(
-                'Query "%s" integrity validation error (missed middleware or validation rules).',
-                $query::class
+                'Command "%s" integrity validation error (missed middleware or validation rules).',
+                $command::class
             ),
             actual: $exception->getMessage()
         );
 
         self::assertInstanceOf(expected: InvalidArgumentException::class, actual: $exception);
 
-        $exception = QueryIntegrityValidationErrorException::general(query: $query, customMessage: 'lorem ipsum');
+        $exception = CommandIntegrityValidationErrorException::general(command: $command, customMessage: 'lorem ipsum');
 
         self::assertEquals(
             expected: sprintf(
-                'Query "%s" integrity validation error: "lorem ipsum" (missed middleware or validation rules).',
-                $query::class
+                'Command "%s" integrity validation error: "lorem ipsum" (missed middleware or validation rules).',
+                $command::class
             ),
             actual: $exception->getMessage()
         );
@@ -57,10 +57,10 @@ final class QueryValidationErrorExceptionTest extends TestCase
      */
     public function testPropertyMissedOrInaccessibleMethod(): void
     {
-        $query = $this->createMock(originalClassName: QueryInterface::class);
+        $command = $this->createMock(originalClassName: CommandInterface::class);
 
-        $exception = QueryIntegrityValidationErrorException::propertyMissedOrInaccessible(
-            query: $query,
+        $exception = CommandIntegrityValidationErrorException::propertyMissedOrInaccessible(
+            command: $command,
             propertyName: 'someProperty'
         );
 
@@ -68,8 +68,8 @@ final class QueryValidationErrorExceptionTest extends TestCase
 
         self::assertEquals(
             expected: sprintf(
-                'Property "someProperty" in query "%s" is required but is missed or inaccessible.',
-                $query::class
+                'Property "someProperty" in command "%s" is required but is missed or inaccessible.',
+                $command::class
             ),
             actual: $exception->getMessage()
         );
@@ -82,7 +82,7 @@ final class QueryValidationErrorExceptionTest extends TestCase
      */
     public function testPropertyHasInvalidValueMethod(): void
     {
-        $query = new class() implements QueryInterface {
+        $command = new class() implements CommandInterface {
             public function getNumber(): int
             {
                 return 42;
@@ -93,15 +93,15 @@ final class QueryValidationErrorExceptionTest extends TestCase
                 return 42.222;
             }
 
-            public function getObject(): Test2Class
+            public function getObject(): TestClass
             {
-                return new Test2Class();
+                return new TestClass();
             }
         };
 
         // nonexistent property
-        $exception = QueryIntegrityValidationErrorException::propertyHasInvalidValue(
-            query: $query,
+        $exception = CommandIntegrityValidationErrorException::propertyHasInvalidValue(
+            command: $command,
             propertyName: 'nonexistent',
             type: 'string'
         );
@@ -110,15 +110,15 @@ final class QueryValidationErrorExceptionTest extends TestCase
 
         self::assertEquals(
             sprintf(
-                'Property "nonexistent" in query "%s" is required but is missed or inaccessible.',
-                $query::class
+                'Property "nonexistent" in command "%s" is required but is missed or inaccessible.',
+                $command::class
             ),
             $exception->getMessage()
         );
 
         // number
-        $exception = QueryIntegrityValidationErrorException::propertyHasInvalidValue(
-            query: $query,
+        $exception = CommandIntegrityValidationErrorException::propertyHasInvalidValue(
+            command: $command,
             propertyName: 'number',
             type: 'string'
         );
@@ -127,15 +127,15 @@ final class QueryValidationErrorExceptionTest extends TestCase
 
         self::assertEquals(
             sprintf(
-                'Property "number" in query "%s" has a value of invalid type (string required but integer given).',
-                $query::class
+                'Property "number" in command "%s" has a value of invalid type (string required but integer given).',
+                $command::class
             ),
             $exception->getMessage()
         );
 
         // decimal
-        $exception = QueryIntegrityValidationErrorException::propertyHasInvalidValue(
-            query: $query,
+        $exception = CommandIntegrityValidationErrorException::propertyHasInvalidValue(
+            command: $command,
             propertyName: 'decimal',
             type: 'array'
         );
@@ -144,15 +144,15 @@ final class QueryValidationErrorExceptionTest extends TestCase
 
         self::assertEquals(
             sprintf(
-                'Property "decimal" in query "%s" has a value of invalid type (array required but float given).',
-                $query::class
+                'Property "decimal" in command "%s" has a value of invalid type (array required but float given).',
+                $command::class
             ),
             $exception->getMessage()
         );
 
         // object
-        $exception = QueryIntegrityValidationErrorException::propertyHasInvalidValue(
-            query: $query,
+        $exception = CommandIntegrityValidationErrorException::propertyHasInvalidValue(
+            command: $command,
             propertyName: 'object',
             type: 'string'
         );
@@ -161,13 +161,13 @@ final class QueryValidationErrorExceptionTest extends TestCase
 
         self::assertEquals(
             sprintf(
-                'Property "object" in query "%s" has a value of invalid type (string required but %s given).',
-                $query::class,
-                Test2Class::class
+                'Property "object" in command "%s" has a value of invalid type (string required but %s given).',
+                $command::class,
+                TestClass::class
             ),
             $exception->getMessage()
         );
     }
 }
 
-class Test2Class {}
+class TestClass {}

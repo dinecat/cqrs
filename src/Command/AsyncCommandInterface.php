@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\Cqrs\Command;
+namespace Dinecat\CQRS\Command;
 
 /**
  * Base interface for asynchronous commands.

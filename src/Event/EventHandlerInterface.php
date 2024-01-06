@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\Cqrs\Event;
+namespace Dinecat\CQRS\Event;
 
 /**
  * Base interface for all event message handlers.

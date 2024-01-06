@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\Cqrs\Query;
+namespace Dinecat\CQRS\Query;
 
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\StampInterface;
 
 /**
  * Bus for query messages.
@@ -22,10 +23,18 @@ final class QueryBus
     }
 
     /**
-     * Performs query and returns result.
+     * Performs query and returns result (for synchronous queries).
+     *
+     * @param array<StampInterface> $stamps
      */
-    public function query(QueryInterface $query): mixed
+    public function query(QueryInterface $query, array $stamps = []): mixed
     {
-        return $this->handle($query);
+        if ($query instanceof AsyncQueryInterface) {
+            $this->messageBus->dispatch(message: $query, stamps: $stamps);
+
+            return null;
+        }
+
+        return $this->handle(message: $query);
     }
 }

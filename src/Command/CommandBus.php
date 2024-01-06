@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\Cqrs\Command;
+namespace Dinecat\CQRS\Command;
 
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\HandleTrait;
@@ -32,14 +32,16 @@ final class CommandBus
      *
      * @param array<StampInterface> $stamps
      */
-    public function command(CommandInterface $command, array $stamps = []): mixed
+    public function command(object $command, array $stamps = []): mixed
     {
         if ($command instanceof AsyncCommandInterface) {
-            $this->messageBus->dispatch($command, $stamps);
+            $this->messageBus->dispatch(message: $command, stamps: $stamps);
 
             return null;
         }
 
-        return $this->handle(count($stamps) > 0 ? Envelope::wrap($command, $stamps) : $command);
+        return $this->handle(
+            message: count(value: $stamps) > 0 ? Envelope::wrap(message: $command, stamps: $stamps) : $command
+        );
     }
 }

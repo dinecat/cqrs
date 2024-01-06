@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\Cqrs\Event;
+namespace Dinecat\CQRS\Event;
 
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -22,6 +22,6 @@ final class EventBus
 
     public function event(EventInterface $event): void
     {
-        $this->messageBus->dispatch($event);
+        $this->messageBus->dispatch(message: $event);
     }
 }
