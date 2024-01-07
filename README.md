@@ -4,33 +4,40 @@ Extension over Symfony Messenger component for provide Command, Query and Event 
 
 ## Using in Symfony project
 
-See: https://symfony.com/doc/current/messenger/multiple_buses.html
+See: https://symfony.com/doc/current/messenger.html#multiple-buses-command-event-buses
 
 ### Setup buses in config/packages/messenger.php (or yaml)
 
 ```php
 $messenger = $framework->messenger();
 
-$messenger->defaultBus('bus.command');
-$messenger->bus('bus.command')->middleware()->id('validation');
-$messenger->bus('bus.query')->middleware()->id('validation');
-$messenger->bus('bus.event')->defaultMiddleware('allow_no_handlers');
+$commandBus = $messenger->bus('command.bus');
+$commandBus->middleware()->id('validation');
+$commandBus->middleware()->id('doctrine_transaction');
+
+$queryBus = $messenger->bus('query.bus');
+$queryBus->middleware()->id('validation');
+
+$eventBus = $messenger->bus('event.bus');
+$eventBus->defaultMiddleware()->enabled(true)->allowNoHandlers(true)->allowNoSenders(true);
 ```
 
 ```yaml
 framework:
     messenger:
-        default_bus: 'bus.command'
+        default_bus: 'command.bus'
         buses:
-            bus.command:
+            command.bus:
                 middleware:
                     - 'validation'
-                    - 'Dinecat\Cqrs\Middleware\SecondLayerValidationMiddleware' # If you need second level.
-            bus.query:
+            query.bus:
                 middleware:
                     - 'validation'
-            bus.event:
-                default_middleware: 'allow_no_handlers'
+            event.bus:
+                default_middleware:
+                    enabled: true
+                    allow_no_handlers: true
+                    allow_no_senders: true
                 middleware: []
 ```
 
@@ -39,27 +46,27 @@ framework:
 ```php
 $services
     ->instanceof(CommandHandlerInterface::class)
-        ->tag('messenger.message_handler', ['bus' => 'bus.command']);
+        ->tag('messenger.message_handler', ['bus' => 'command.bus']);
 $services
     ->instanceof(QueryHandlerInterface::class)
-        ->tag('messenger.message_handler', ['bus' => 'bus.query']);
+        ->tag('messenger.message_handler', ['bus' => 'query.bus']);
 $services
     ->instanceof(EventHandlerInterface::class)
-        ->tag('messenger.message_handler', ['bus' => 'bus.event']);
+        ->tag('messenger.message_handler', ['bus' => 'event.bus']);
 ```
 
 ```yaml
 services:
     _instanceof:
-        Dinecat\Cqrs\CommandBus\CommandHandlerInterface:
+        Dinecat\CQRS\CommandBus\CommandHandlerInterface:
             tags:
-                - { name: 'messenger.message_handler', bus: 'bus.command' }
+                - { name: 'messenger.message_handler', bus: 'command.bus' }
 
-        Dinecat\Cqrs\QueryBus\QueryHandlerInterface:
+        Dinecat\CQRS\QueryBus\QueryHandlerInterface:
             tags:
-                - { name: 'messenger.message_handler', bus: 'bus.query' }
+                - { name: 'messenger.message_handler', bus: 'query.bus' }
 
-        Dinecat\Cqrs\EventBus\EventHandlerInterface:
+        Dinecat\CQRS\EventBus\EventHandlerInterface:
             tags:
-                - { name: 'messenger.message_handler', bus: 'bus.event' }
+                - { name: 'messenger.message_handler', bus: 'event.bus' }
 ```
