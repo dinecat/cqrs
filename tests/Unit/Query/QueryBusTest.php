@@ -2,46 +2,63 @@
 
 declare(strict_types=1);
 
-namespace Dinecat\CqrsTests\Unit\Query;
+namespace Dinecat\CQRSTests\Unit\Query;
 
-use Dinecat\Cqrs\Query\QueryBus;
-use Dinecat\Cqrs\Query\QueryInterface;
+use Dinecat\CQRS\Query\AsyncQueryInterface;
+use Dinecat\CQRS\Query\QueryBus;
+use Dinecat\CQRS\Query\QueryInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 
 /**
- * @coversDefaultClass \Dinecat\Cqrs\Query\QueryBus
+ * @coversDefaultClass \Dinecat\CQRS\Query\QueryBus
  *
  * @internal
  */
 final class QueryBusTest extends TestCase
 {
     /**
-     * Checks is query dispatched and result is returned.
+     * Checks the query is dispatched and result is returned.
      *
+     * @covers ::__construct
      * @covers ::query
      */
     public function testOnPerformQuery(): void
     {
-        $bus = new QueryBus($this->getMessageBusMock());
+        self::assertEquals(
+            expected: ['something'],
+            actual: (new QueryBus(queryMessageBus: $this->getMessageBusMock()))
+                ->query(query: $this->createMock(originalClassName: QueryInterface::class))
+        );
+    }
 
-        $result = $bus->query($this->createMock(QueryInterface::class));
-
-        self::assertEquals(['something'], $result);
+    /**
+     * Checks the async query is dispatched, and null is returned.
+     *
+     * @covers ::__construct
+     * @covers ::query
+     */
+    public function testOnPerformAsyncQuery(): void
+    {
+        self::assertNull(
+            actual: (new QueryBus(queryMessageBus: $this->getMessageBusMock()))
+                ->query(query: $this->createMock(originalClassName: AsyncQueryInterface::class))
+        );
     }
 
     private function getMessageBusMock(): MessageBusInterface
     {
-        $messageBus = $this->createMock(MessageBusInterface::class);
+        $messageBus = $this->createMock(originalClassName: MessageBusInterface::class);
 
         $messageBus
             ->expects(self::once())
-            ->method('dispatch')
-            ->willReturnCallback(
-                fn (QueryInterface $query) => new Envelope($query, [new HandledStamp(['something'], 'some')])
-            );
+            ->method(constraint: 'dispatch')
+            ->willReturnCallback(callback: static fn (QueryInterface $query) => new Envelope(
+                message: $query,
+                stamps: [new HandledStamp(result: ['something'], handlerName: 'some')]
+            ));
 
         return $messageBus;
     }

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Dinecat\CQRS\Command;
 
 /**
- * Base interface for all commands.
+ * Base interface for asynchronous commands.
  *
  * @author Mykola Zyk <mykola.zyk@dinecat.com>
  */
-interface CommandInterface {}
+interface AsyncCommandInterface extends CommandInterface {}
